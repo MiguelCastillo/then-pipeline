@@ -9,7 +9,7 @@ The primary purpose for building pipelines with `then-pipeline` is to chain a se
 
 This is similar to lots of the *Middleware* utilities out there. Except that this runs *all* your handlers by default, until you `cancel` the sequence. As oppossed to calling `next` in every handler in order to execute the next handler in the pipeline. The reason for this reversed approach is that I have found that more often than not you want to execute *all* handlers in the pipeline. So I figured I'd reduce the boilerplate of calling next for the common case. So in order to control async work, handlers return Promises.
 
-Another really important feature of `then-pipeline` is to enable immutable data processing. Handlers now return data that is subsequently passed into the next handler, instead of mutating object and relying on side effects in order to communicate changes to subsequent handlers.
+Another really important feature of `then-pipeline` is to enable immutable data processing. Handlers now return data that is subsequently passed into the next handler, instead of mutating objects and relying on side effects in order to communicate changes to subsequent handlers.
 
 ``` javascript
 /* no more side effects to communicate changes to other handlers - YUCK! */
