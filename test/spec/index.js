@@ -126,8 +126,6 @@ describe('Test suite', () => {
     });
 
     describe('and running the pipeline Synchronously and cancelling the first handler', () => {
-      var cancelStub;
-
       beforeEach(() => {
         handler1 = sinon.spy((val, cancel) => { cancel(); return 32; });
         handler2 = sinon.stub().returns(45);
@@ -150,8 +148,6 @@ describe('Test suite', () => {
     });
 
     describe('and running the pipeline Asynchronously and cancelling the first handler', () => {
-      var cancelStub;
-
       beforeEach(() => {
         handler1 = sinon.spy((val, cancel) => { cancel(); return Promise.resolve(32); });
         handler2 = sinon.stub().returns(Promise.resolve(45));
