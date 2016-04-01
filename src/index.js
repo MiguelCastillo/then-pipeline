@@ -1,52 +1,65 @@
-function Pipeline(handlers) {
+function Pipeline(transforms) {
   if (!(this instanceof Pipeline)) {
-    return new Pipeline(handlers);
+    return new Pipeline(transforms);
   }
-  this._handlers = handlers || [];
+  this._transforms = transforms || [];
 }
 
 
-Pipeline.create = function(handlers) {
-  return new Pipeline(handlers);
+Pipeline.create = function(transforms) {
+  return new Pipeline(transforms);
 };
 
 
-Pipeline.prototype.use = function(handler) {
-  this._handlers.push(handler);
+Pipeline.prototype.use = function(transform) {
+  this._transforms.push(transform);
   return this;
 };
 
 
 Pipeline.prototype.runAsync = function(data) {
-  return this.getRunnables().reduce(function runPipelineAsync(promise, runnable) {
-    return promise.then(runnable);
-  }, Promise.resolve(data));
+  return Pipeline.runAsync(data, this._transforms);
 };
 
 
 Pipeline.prototype.runSync = function(data) {
-  return this.getRunnables().reduce(function runPipelineSync(result, runnable) {
-    return runnable(result);
-  }, data);
+  return Pipeline.runSync(data, this._transforms);
 };
 
 
-Pipeline.prototype.getRunnables = function() {
+Pipeline.runAsync = function(data, transforms) {
+  return Pipeline
+    .createRunnables(transforms)
+    .reduce(function runPipelineAsync(promise, runnable) {
+      return promise.then(runnable);
+    }, Promise.resolve(data));
+};
+
+
+Pipeline.runSync = function(data, transforms) {
+  return Pipeline
+    .createRunnables(transforms)
+    .reduce(function runPipelineSync(result, runnable) {
+      return runnable(result);
+    }, data);
+};
+
+
+Pipeline.createRunnables = function(transforms) {
   var cancelled = false;
   function cancel() {
     cancelled = true;
   }
 
-  return this._handlers
-    .map(function(handler) {
-      return function runnable(result) {
-        if (cancelled) {
-          return result;
-        }
+  return transforms.map(function(transform) {
+    return function runnable(result) {
+      if (cancelled) {
+        return result;
+      }
 
-        return handler(result, cancel);
-      };
-    });
+      return transform(result, cancel);
+    };
+  });
 };
 
 
