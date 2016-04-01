@@ -33,7 +33,7 @@
   "directories": {
     "test": "test"
   },
-  "description": "Build pipelines that are promise aware, and are cancellable.",
+  "description": "Build cancellable pipelines to transform your data",
   "repository": {
     "type": "git",
     "url": "https://github.com/MiguelCastillo/then-pipeline.git"
